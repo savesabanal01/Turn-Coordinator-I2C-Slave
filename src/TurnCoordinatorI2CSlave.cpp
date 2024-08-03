@@ -72,7 +72,7 @@ void setup()
   tft.fillScreen(TFT_BLACK);
 
   tft.setSwapBytes(true);
-  tft.pushImage(80, 0, 320, 320, instrument_bezel, PANEL_COLOR);
+  tft.pushImage(80, 0, 320, 320, instrument_bezel, TFT_BLACK);
 }
 
 void loop()
