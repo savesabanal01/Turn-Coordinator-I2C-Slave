@@ -20,13 +20,13 @@ TFT_eSprite TCPlaneSpr = TFT_eSprite(&tft);   // Sprite for Turn Coordinator Air
 TFT_eSprite slipBallSpr = TFT_eSprite(&tft);  // Sprite for slip ball
 TFT_eSprite slipCtrLnSpr = TFT_eSprite(&tft); // Sprite for slip center line
 
-float turnAngle = 0;                 // angle of the turn angle from the simulator Initial Value
-double slipDegree = 0;                // angle of the slip from the simulator
-float instrumentBrightnessRatio = 0; // instrument brightness ratio from sim
-int instrumentBrightness = 0;        // instrument brightness based on ratio. Value between 0 - 255
+float turnAngle = 0;                     // angle of the turn angle from the simulator Initial Value
+double slipDegree = 0;                   // angle of the slip from the simulator
+float instrumentBrightnessRatio = 1;     // instrument brightness ratio from sim
+int instrumentBrightness = 255;            // instrument brightness based on ratio. Value between 0 - 255
 float prevInstrumentBrightnessRatio = 0; // previous value of instrument brightness. If no change do not set instrument brightness to avoid flickers
-float ballXPos = 0;                  // X position of the ball
-float ballYPos = 0;                  // YPosition of the ball
+float ballXPos = 0;                      // X position of the ball
+float ballYPos = 0;                      // YPosition of the ball
 float startTime = 0;
 float endTime = 0;
 float fps = 0;
@@ -72,15 +72,9 @@ void setup()
   delay(3000);
   tft.fillScreen(PANEL_COLOR);
   tft.fillCircle(240, 160, 160, TFT_BLACK);
-  
+
   tft.setSwapBytes(true);
   tft.pushImage(80, 0, 320, 320, instrument_bezel, TFT_BLACK);
-
-  if (prevInstrumentBrightnessRatio != instrumentBrightnessRatio) // there is a change in brighness, execute code
-  {
-    analogWrite(TFT_BL, instrumentBrightness);
-    prevInstrumentBrightnessRatio = instrumentBrightnessRatio;
-  }
 
 }
 
@@ -127,17 +121,11 @@ void loop()
   // Check if messages are coming in
   endTime = millis();
   fps = 1000 / (endTime - startTime);
-
-  // tft.drawString("Message ID:", 0, 0, 2);
-  // tft.drawString(String(messageID), 0, 20, 2);
-  // tft.drawString("Turn Angle", 0, 40, 2);
-
-  // tft.drawString(String(turnAngle), 6, 60, 2);
-  // tft.drawString("Slip Degree: ", 0, 80, 2);
-  // tft.drawString(String(slipDegree), 6, 100, 2);
-  // tft.drawString("FPS: ", 0, 120, 2);
-  // tft.drawString(String(fps), 0, 140, 2);
-
+  if (prevInstrumentBrightnessRatio != instrumentBrightnessRatio) // there is a change in brighness, execute code
+  {
+    analogWrite(TFT_BL, instrumentBrightness);
+    prevInstrumentBrightnessRatio = instrumentBrightnessRatio;
+  }
 
   // Serial.println(fps);
 }
@@ -155,7 +143,6 @@ void checkI2CMesage()
       // do something with your received data
       // Serial.print("MessageID is -1 and Payload is: "); Serial.println(message);
       // tbd
-      break;
 
     case 2:
       // received messageID is 0
