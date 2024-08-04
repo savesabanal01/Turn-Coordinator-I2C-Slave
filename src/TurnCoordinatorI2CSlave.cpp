@@ -24,6 +24,7 @@ float turnAngle = 0;                 // angle of the turn angle from the simulat
 double slipDegree = 0;                // angle of the slip from the simulator
 float instrumentBrightnessRatio = 0; // instrument brightness ratio from sim
 int instrumentBrightness = 0;        // instrument brightness based on ratio. Value between 0 - 255
+float prevInstrumentBrightnessRatio = 0; // previous value of instrument brightness. If no change do not set instrument brightness to avoid flickers
 float ballXPos = 0;                  // X position of the ball
 float ballYPos = 0;                  // YPosition of the ball
 float startTime = 0;
@@ -64,15 +65,23 @@ void setup()
 
   tft.begin();
   tft.setRotation(1);
-  tft.fillScreen(TFT_BLACK);
+  tft.fillScreen(PANEL_COLOR);
   tft.setPivot(320, 160);
   tft.setSwapBytes(true);
   tft.pushImage(160, 80, 160, 160, logo);
   delay(3000);
-  tft.fillScreen(TFT_BLACK);
-
+  tft.fillScreen(PANEL_COLOR);
+  tft.fillCircle(240, 160, 160, TFT_BLACK);
+  
   tft.setSwapBytes(true);
   tft.pushImage(80, 0, 320, 320, instrument_bezel, TFT_BLACK);
+
+  if (prevInstrumentBrightnessRatio != instrumentBrightnessRatio) // there is a change in brighness, execute code
+  {
+    analogWrite(TFT_BL, instrumentBrightness);
+    prevInstrumentBrightnessRatio = instrumentBrightnessRatio;
+  }
+
 }
 
 void loop()
